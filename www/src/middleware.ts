@@ -42,6 +42,7 @@ export function middleware(request: NextRequest) {
   // Paths that are always allowed regardless of initialization or auth status
   const alwaysAllowedPaths = [
     '/api/sub',           // Subscription conversion API (all sub routes)
+    '/api/s',             // Short URL API (all short URL operations)
     '/s/',                // Short link access
     '/_next/',            // Next.js internal
     '/static/',           // Static resources
