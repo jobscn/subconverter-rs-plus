@@ -29,6 +29,51 @@ function getCustomProtectedPaths(): string[] {
 }
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // ============================
+  // Step 1: Check initialization status FIRST
+  // ============================
+  
+  // Paths that are always allowed regardless of initialization or auth status
+  const alwaysAllowedPaths = [
+    '/api/sub',           // Subscription conversion API (all sub routes)
+    '/s/',                // Short link access
+    '/_next/',            // Next.js internal
+    '/static/',           // Static resources
+    '/favicon.ico',       // Favicon
+    '/logo.svg'           // Logo
+  ];
+
+  // Allow these paths immediately
+  if (alwaysAllowedPaths.some(path => pathname.startsWith(path) || pathname === path)) {
+    return NextResponse.next();
+  }
+
+  // Check if app is initialized via cookie
+  // AppInitializer sets this cookie after successful initialization
+  const initCookie = request.cookies.get('app_initialized');
+  const isInitialized = initCookie?.value === 'true';
+
+  // If not initialized, only allow access to initialization-related paths
+  if (!isInitialized) {
+    const initAllowedPaths = [
+      '/startup',           // Initialization page
+      '/api/init',          // Initialization API
+    ];
+    
+    if (initAllowedPaths.some(path => pathname.startsWith(path) || pathname === path)) {
+      return NextResponse.next();
+    }
+    
+    // Redirect any other path to startup page
+    return NextResponse.redirect(new URL('/startup', request.url));
+  }
+
+  // ============================
+  // Step 2: Check authentication (only after initialization)
+  // ============================
+  
   // Check if authentication is enabled
   const authEnabled = process.env.AUTH_ENABLE === 'true';
   
@@ -37,24 +82,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const { pathname } = request.nextUrl;
-
-  // Always allow these paths (no authentication required)
-  // Includes: initialization, subscription APIs, short links, login, auth APIs, and static resources
-  const alwaysAllowedPaths = [
-    '/startup',           // Initialization page
-    '/api/init',          // Initialization API
-    '/api/sub',           // Subscription conversion API (all sub routes)
-    '/s/',                // Short link access
+  // Paths that don't require authentication (but app must be initialized)
+  const authExemptPaths = [
     '/login',             // Login page
     '/api/auth/',         // Authentication APIs
-    '/_next/',            // Next.js internal
-    '/static/',           // Static resources
-    '/favicon.ico',       // Favicon
-    '/logo.svg'           // Logo
   ];
 
-  if (alwaysAllowedPaths.some(path => pathname.startsWith(path) || pathname === path)) {
+  if (authExemptPaths.some(path => pathname.startsWith(path) || pathname === path)) {
     return NextResponse.next();
   }
 

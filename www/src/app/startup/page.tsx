@@ -23,6 +23,11 @@ export default function StartupPage() {
                     setStatus(t('status_success'));
                     // Set a flag in localStorage to indicate initialization is complete
                     localStorage.setItem('webappInitialized', 'true');
+                    
+                    // Set a cookie for middleware to check initialization status
+                    // This cookie will be checked by middleware before authentication
+                    document.cookie = 'app_initialized=true; path=/; max-age=31536000; SameSite=Lax';
+                    
                     console.log('Initialization successful, redirecting to home...');
                     // Redirect to the home page after a short delay
                     // Adjust delay based on whether GitHub load was triggered

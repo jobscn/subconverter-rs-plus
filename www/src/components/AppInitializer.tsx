@@ -14,11 +14,23 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     const [isInitialized, setIsInitialized] = useState<boolean | null>(null); // null initially, true/false after check
 
     useEffect(() => {
-        // Check localStorage only on the client side
-        const initialized = localStorage.getItem(INIT_FLAG_KEY) === 'true';
+        // Check both localStorage and cookie on the client side
+        // Cookie is checked by middleware, localStorage is for client-side logic
+        const localStorageInitialized = localStorage.getItem(INIT_FLAG_KEY) === 'true';
+        
+        // Also check if cookie exists (should match localStorage)
+        const cookieInitialized = document.cookie.split('; ').some(cookie => cookie === 'app_initialized=true');
+        
+        // If localStorage says initialized but cookie doesn't exist, set the cookie
+        if (localStorageInitialized && !cookieInitialized) {
+            console.log('AppInitializer: Setting missing initialization cookie');
+            document.cookie = 'app_initialized=true; path=/; max-age=31536000; SameSite=Lax';
+        }
+        
+        const initialized = localStorageInitialized || cookieInitialized;
         setIsInitialized(initialized);
 
-        console.log(`AppInitializer: Initialized flag = ${initialized}`);
+        console.log(`AppInitializer: Initialized flag = ${initialized} (localStorage: ${localStorageInitialized}, cookie: ${cookieInitialized})`);
 
         // If not initialized and not already on the startup page, redirect
         if (!initialized && pathname !== STARTUP_PATH) {
