@@ -6,6 +6,7 @@ import { useState, FormEvent, useCallback, useEffect } from "react";
 import { useTranslations } from 'next-intl';
 import { convertSubscription, SubResponseData, ErrorData, createShortUrl, ShortUrlData, getAvailableDownloads, detectUserOS, AppDownloadInfo } from '@/lib/api-client';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import LogoutButton from '@/components/LogoutButton';
 
 // Define config presets for easy maintenance
 const CONFIG_PRESETS = [
@@ -52,6 +53,20 @@ export default function Home() {
   const [userOs, setUserOs] = useState<string>("");
   const [downloads, setDownloads] = useState<AppDownloadInfo[]>([]);
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if user is logged in by checking for auth cookie
+  useEffect(() => {
+    const checkAuth = () => {
+      const cookies = document.cookie.split(';');
+      const hasAuthCookie = cookies.some(cookie => 
+        cookie.trim().startsWith('subconverter_auth=')
+      );
+      setIsLoggedIn(hasAuthCookie);
+    };
+    
+    checkAuth();
+  }, []);
 
   // Detect user OS
   useEffect(() => {
@@ -191,6 +206,7 @@ export default function Home() {
           </div>
           <div className="flex gap-4 items-center">
             <LanguageSwitcher />
+            {isLoggedIn && <LogoutButton />}
             <a
               href="https://github.com/lonelam/subconverter-rs"
               target="_blank"

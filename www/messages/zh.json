@@ -341,5 +341,19 @@
         "uploadPathLabel": "上传Gist路径",
         "uploadPathPlaceholder": "例如：profiles/my_config.yaml",
         "uploadPathHelp": "在服务器上保存转换结果的路径（需要服务器启用）"
+    },
+    "Login": {
+        "title": "登录",
+        "username": "用户名",
+        "password": "密码",
+        "submit": "登录",
+        "error": "登录失败",
+        "invalidCredentials": "用户名或密码错误",
+        "authDisabled": "认证未启用",
+        "loggingIn": "登录中..."
+    },
+    "Logout": {
+        "button": "登出",
+        "loggingOut": "登出中..."
     }
 }

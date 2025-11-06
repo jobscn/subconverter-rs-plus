@@ -338,5 +338,19 @@
         "uploadPathLabel": "Upload Gist Path",
         "uploadPathPlaceholder": "e.g., profiles/my_config.yaml",
         "uploadPathHelp": "Path on the server to save the converted result (requires server enablement)"
+    },
+    "Login": {
+        "title": "Login",
+        "username": "Username",
+        "password": "Password",
+        "submit": "Login",
+        "error": "Login Failed",
+        "invalidCredentials": "Invalid username or password",
+        "authDisabled": "Authentication is not enabled",
+        "loggingIn": "Logging in..."
+    },
+    "Logout": {
+        "button": "Logout",
+        "loggingOut": "Logging out..."
     }
 }

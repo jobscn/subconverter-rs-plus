@@ -1,3 +1,6 @@
+# Netlify Build Configuration
+# For one-click deployment to Netlify
+
 [build]
 base = "www"
 command = "pnpm install --production=false && pnpm build"
@@ -8,3 +11,18 @@ package = "@netlify/plugin-nextjs"
 
 [build.environment]
 NODE_ENV = "production"
+
+# Environment Variables Configuration
+# Set these in your Netlify dashboard under Site settings > Environment variables
+# 
+# Required for authentication:
+# - AUTH_ENABLE: Set to "true" to enable authentication, "false" to disable
+# - AUTH_USERNAME: Username for login (required if AUTH_ENABLE=true)
+# - AUTH_PASSWORD: Password for login (required if AUTH_ENABLE=true)
+#
+# Optional:
+# - PROTECTED_PATHS: Comma-separated list of additional paths to protect
+#   Example: /custom-admin,/private,/internal
+#
+# Note: Do not store sensitive credentials in this file.
+# Always use Netlify's environment variable settings in the dashboard.
