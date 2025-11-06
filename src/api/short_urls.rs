@@ -150,8 +150,8 @@ pub async fn short_url_create(
         let mut attempts = 0;
         let mut id;
         loop {
-            // Start with 6 chars, increase if needed
-            let length = 6 + attempts / 3;
+            // Start with 11 chars (64-bit security), increase if needed
+            let length = 11 + attempts / 3;
             id = generate_short_id(length);
             let path = get_short_url_path(&id);
             if !vfs.exists(&path).await.unwrap_or(true) {
