@@ -11,6 +11,36 @@ pub fn explode_http_sub(link: &str, node: &mut Proxy) -> bool {
         Err(_) => return false,
     };
 
+    // Check if this looks like a subscription URL or API endpoint rather than
+    // an HTTP proxy configuration. HTTP proxy configs in this format are very rare
+    // and typically should have authentication (user:pass) in the URL.
+    let path = url.path();
+    let has_basic_auth = !url.username().is_empty() || url.password().is_some();
+    
+    // Reject if this looks like a subscription API endpoint with typical patterns
+    if path.contains("/sub") 
+        || path.contains("/api") 
+        || path.contains("/v2ray") 
+        || path.contains("/clash")
+        || path.contains("/surge")
+        || path.contains("/download")
+        || path.contains("/generate")
+    {
+        return false;
+    }
+    
+    // Reject if the path is complex (more than 2 segments) - likely a subscription URL
+    let path_segments: Vec<&str> = path.split('/').filter(|s| !s.is_empty()).collect();
+    if path_segments.len() > 2 {
+        return false;
+    }
+    
+    // Reject if there's no basic authentication and the path is not root
+    // (HTTP proxy configs should either be at root or have authentication)
+    if !has_basic_auth && path != "/" && !path.is_empty() {
+        return false;
+    }
+
     // Determine if TLS is enabled
     let is_https = url.scheme() == "https";
 
