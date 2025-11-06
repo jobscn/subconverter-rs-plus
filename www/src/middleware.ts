@@ -84,8 +84,10 @@ export function middleware(request: NextRequest) {
 
   // Paths that don't require authentication (but app must be initialized)
   const authExemptPaths = [
+    '/startup',           // Startup/initialization page (should always be accessible)
     '/login',             // Login page
     '/api/auth/',         // Authentication APIs
+    '/api/init',          // Initialization API
   ];
 
   if (authExemptPaths.some(path => pathname.startsWith(path) || pathname === path)) {
