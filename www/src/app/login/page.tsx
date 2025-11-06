@@ -33,7 +33,8 @@ export default function LoginPage() {
       if (response.ok && data.success) {
         // Set cookie (done by API) and redirect
         const redirectTo = searchParams.get('redirect') || '/';
-        router.push(redirectTo);
+        // Use full page navigation to ensure cookie is properly set and sent with next request
+        window.location.href = redirectTo;
       } else {
         setError(data.error || t('invalidCredentials'));
       }
