@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAuthToken } from '@/lib/auth';
 
+// Force Node.js runtime for middleware to support crypto module
+// Edge Runtime doesn't support Node.js crypto, causing token verification to fail
+export const runtime = 'nodejs';
+
 const AUTH_COOKIE_NAME = 'subconverter_auth';
 
 /**
